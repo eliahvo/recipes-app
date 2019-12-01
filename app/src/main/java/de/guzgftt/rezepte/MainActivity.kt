@@ -1,6 +1,8 @@
 package de.guzgftt.rezepte
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
@@ -48,17 +50,26 @@ class MainActivity : AppCompatActivity() {
 
     //deletes a recipe
     private fun delete(position: Int) : Boolean{
-        arrayList.remove(arrayList[position])
-        listAdapter!!.notifyDataSetChanged()
+        //Delete Dialog
+        AlertDialog.Builder(this)
+            .setIcon(android.R.drawable.ic_delete)
+            .setTitle("Löschen?")
+            .setMessage("Rezept " + recipeList[position].name + " wirlich löschen?")
+            .setPositiveButton("Ja", DialogInterface.OnClickListener(){ dialog, which ->
+                arrayList.remove(arrayList[position])
+                listAdapter!!.notifyDataSetChanged()
 
-        val fileDel = File(recipeList[position].picture)
-        fileDel.delete()
+                val fileDel = File(recipeList[position].picture)
+                fileDel.delete()
 
-        recipeList.remove(recipeList[position])
+                recipeList.remove(recipeList[position])
 
-        if(arrayList.isEmpty() && recipeList.isEmpty()){
-            textViewNoListItems.text = "Tippe auf das + um ein neues Rezept hinzuzufügen"
-        }
+                if(arrayList.isEmpty() && recipeList.isEmpty()){
+                    textViewNoListItems.text = "Tippe auf das + um ein neues Rezept hinzuzufügen"
+                }
+            })
+            .setNegativeButton("Nein", null)
+            .show()
 
         return true
     }
