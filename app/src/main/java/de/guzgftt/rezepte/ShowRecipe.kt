@@ -21,6 +21,8 @@ class ShowRecipe : AppCompatActivity() {
         recipe_name.text = recipe.name
 
         val bitmap = BitmapFactory.decodeFile(recipe.picture)
-        show_recipe_image.setImageBitmap(bitmap)
+
+        //photoView (zoomable)
+        photo_view.setImageBitmap(bitmap)
     }
 }
