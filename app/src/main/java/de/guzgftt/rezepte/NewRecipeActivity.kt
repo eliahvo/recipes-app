@@ -15,6 +15,7 @@ import java.lang.Exception
 import android.R.attr.bitmap
 import java.nio.file.Files.exists
 import android.content.ContextWrapper
+import android.content.pm.ActivityInfo
 import android.os.Environment
 import android.util.Log
 import androidx.core.content.FileProvider
@@ -57,6 +58,7 @@ class NewRecipeActivity : AppCompatActivity() {
     private val REQUEST_TAKE_PHOTO = 1
 
     private fun dispatchTakePictureIntent() {
+
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             // Ensure that there's a camera activity to handle the intent
             takePictureIntent.resolveActivity(packageManager)?.also {
@@ -103,19 +105,6 @@ class NewRecipeActivity : AppCompatActivity() {
         }
 
     }
-/*
-    private fun checkPhotoFormat(){
-        val photo = BitmapFactory.decodeFile(currentPhotoPath)
-
-        if(photo.width > photo.height){
-            val matrix = Matrix()
-            matrix.postRotate(-90 as Float) // anti-clockwise by 90 degrees
-
-// create a new bitmap from the original using the matrix to transform the result
-            val rotatedBitmap = Bitmap.createBitmap(photo, 0, 0, photo.getWidth(), photo.getHeight(), matrix, true)
-            new_recipe_image.setImageBitmap(rotatedBitmap)
-        }
-    }*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -133,7 +122,7 @@ class NewRecipeActivity : AppCompatActivity() {
         button_add_recipe.setOnClickListener{
             if(new_recipe_name.text.toString() == ""){
                 Toast.makeText(this, "Name fehlt", Toast.LENGTH_SHORT).show()
-            }else if(currentPhotoPath == ""){
+            }else if(File(currentPhotoPath).exists()){
                 Toast.makeText(this, "Foto fehlt", Toast.LENGTH_SHORT).show()
             }else{
                 renameFile()

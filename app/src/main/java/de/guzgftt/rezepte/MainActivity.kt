@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
                 }
             })
 
-            if(allFiles.isEmpty()) textViewNoListItems.text = "Tippe auf das + um ein neues Genre hinzuzufügen"
+            if(allFiles.isEmpty()) textViewNoListItems.text = "Tippe auf das + um eine neue Kategorie hinzuzufügen"
 
             for(i in 0..allFiles.size-1){
                 allFiles[i] = storageDir.absolutePath + "/" + allFiles[i]
@@ -85,14 +85,17 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 if(!allDeleted) Toast.makeText(this, "Löschen schiefgelaufen!", Toast.LENGTH_SHORT).show()
-                else dirDel.delete()
+                else {
+                    dirDel.delete()
 
-                genreList.remove(genreList[position])
+                    genreList.remove(genreList[position])
 
-                Toast.makeText(this, "Genre gelöscht", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Kategorie gelöscht", Toast.LENGTH_SHORT).show()
+                }
+
 
                 if(arrayList.isEmpty() && genreList.isEmpty()){
-                    textViewNoListItems.text = "Tippe auf das + um ein neues Genre hinzuzufügen"
+                    textViewNoListItems.text = "Tippe auf das + um eine neue Kategorie hinzuzufügen"
                 }
             })
             .setNegativeButton("Nein", null)
