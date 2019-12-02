@@ -36,12 +36,14 @@ class NewRecipeActivity : AppCompatActivity() {
 
     var currentPhotoPath: String = ""
     var newPhotoPath : String = ""
+    var genre : String = ""
 
     @Throws(IOException::class)
     private fun createImageFile(): File {
         // Create an image file name
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        val storageDir: File = getExternalFilesDir(Environment.DIRECTORY_PICTURES) as File
+        var storageDir = File(genre)//debugging
+
         return File.createTempFile(
             "JPEG_${timeStamp}_", /* prefix */
             ".jpg", /* suffix */
@@ -52,7 +54,7 @@ class NewRecipeActivity : AppCompatActivity() {
         }
     }
 
-    val REQUEST_TAKE_PHOTO = 1
+    private val REQUEST_TAKE_PHOTO = 1
 
     private fun dispatchTakePictureIntent() {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
@@ -94,11 +96,12 @@ class NewRecipeActivity : AppCompatActivity() {
         var path = currentPhotoPath.substring(0, lastSlash)
         newPhotoPath = path + "/" + new_recipe_name.text.toString() + ".jpg"
 
-        if(!file.renameTo(File(newPhotoPath))){
-            Toast.makeText(this, "Rename failed!", Toast.LENGTH_SHORT).show()
-        }else{
-            Toast.makeText(this, "Rename succeed!", Toast.LENGTH_SHORT).show()
+        try {
+            file.renameTo(File(newPhotoPath))
+        }catch (e : Exception){
+            Toast.makeText(this, "Rename failed", Toast.LENGTH_SHORT).show()
         }
+
     }
 /*
     private fun checkPhotoFormat(){
@@ -118,18 +121,20 @@ class NewRecipeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.new_recipe)
 
+        val path = intent.getStringExtra("path") as String
+        genre = path
+
+        //OnClickListener for taking photo
         btn_take_photo.setOnClickListener{
             dispatchTakePictureIntent()
-
-            Toast.makeText(this, currentPhotoPath, Toast.LENGTH_SHORT).show()
         }
 
         //setOnClickListener for adding recipe to list
         button_add_recipe.setOnClickListener{
             if(new_recipe_name.text.toString() == ""){
-                Toast.makeText(this, "No text entered", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Name fehlt", Toast.LENGTH_SHORT).show()
             }else if(currentPhotoPath == ""){
-                Toast.makeText(this, "No photo taken", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Foto fehlt", Toast.LENGTH_SHORT).show()
             }else{
                 renameFile()
                 val intent = Intent()
