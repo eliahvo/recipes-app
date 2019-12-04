@@ -108,6 +108,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+        supportActionBar!!.title = "Kategorien"
 
         //setting up the list
         listAdapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayList)

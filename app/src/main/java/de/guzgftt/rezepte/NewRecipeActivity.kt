@@ -26,11 +26,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.media.ExifInterface
 import kotlinx.android.synthetic.main.show_recipe.*
 import android.opengl.ETC1.getHeight
 import android.opengl.ETC1.getWidth
-
-
+import java.net.URI
 
 
 class NewRecipeActivity : AppCompatActivity() {
@@ -50,6 +50,10 @@ class NewRecipeActivity : AppCompatActivity() {
             ".jpg", /* suffix */
             storageDir /* directory */
         ).apply {
+            //check if capture attempt happened already and delete it
+            if(currentPhotoPath != ""){
+                if(File(currentPhotoPath).exists()) File(currentPhotoPath).delete()
+            }
             // Save a file: path for use with ACTION_VIEW intents
             currentPhotoPath = absolutePath
         }
@@ -77,6 +81,7 @@ class NewRecipeActivity : AppCompatActivity() {
                         it
                     )
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                    takePictureIntent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
                     startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO)
 
                     //photo nicht voll
@@ -122,7 +127,7 @@ class NewRecipeActivity : AppCompatActivity() {
         button_add_recipe.setOnClickListener{
             if(new_recipe_name.text.toString() == ""){
                 Toast.makeText(this, "Name fehlt", Toast.LENGTH_SHORT).show()
-            }else if(File(currentPhotoPath).exists()){
+            }else if(!File(currentPhotoPath).exists()){
                 Toast.makeText(this, "Foto fehlt", Toast.LENGTH_SHORT).show()
             }else{
                 renameFile()
@@ -135,10 +140,16 @@ class NewRecipeActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        if(currentPhotoPath != "") File(currentPhotoPath).delete()
+        super.onBackPressed()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
-            //checkPhotoFormat()
+
+            //check image orientation
 
             val bitmap = BitmapFactory.decodeFile(currentPhotoPath)
             new_recipe_image.setImageBitmap(bitmap)
