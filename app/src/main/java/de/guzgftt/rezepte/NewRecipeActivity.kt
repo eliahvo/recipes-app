@@ -15,6 +15,7 @@ import java.lang.Exception
 import android.R.attr.bitmap
 import java.nio.file.Files.exists
 import android.content.ContextWrapper
+import android.content.pm.ActivityInfo
 import android.os.Environment
 import android.util.Log
 import androidx.core.content.FileProvider
@@ -25,11 +26,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.media.ExifInterface
 import kotlinx.android.synthetic.main.show_recipe.*
 import android.opengl.ETC1.getHeight
 import android.opengl.ETC1.getWidth
-
-
+import java.net.URI
 
 
 class NewRecipeActivity : AppCompatActivity() {
@@ -37,6 +38,7 @@ class NewRecipeActivity : AppCompatActivity() {
     var currentPhotoPath: String = ""
     var newPhotoPath : String = ""
     var genre : String = ""
+    var imageBitmap : Bitmap? = null
 
     @Throws(IOException::class)
     private fun createImageFile(): File {
@@ -49,6 +51,11 @@ class NewRecipeActivity : AppCompatActivity() {
             ".jpg", /* suffix */
             storageDir /* directory */
         ).apply {
+            //check if capture attempt happened already and delete it
+            if(currentPhotoPath != ""){
+                if(File(currentPhotoPath).exists()) File(currentPhotoPath).delete()
+            }
+
             // Save a file: path for use with ACTION_VIEW intents
             currentPhotoPath = absolutePath
         }
@@ -57,6 +64,7 @@ class NewRecipeActivity : AppCompatActivity() {
     private val REQUEST_TAKE_PHOTO = 1
 
     private fun dispatchTakePictureIntent() {
+
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             // Ensure that there's a camera activity to handle the intent
             takePictureIntent.resolveActivity(packageManager)?.also {
@@ -67,6 +75,7 @@ class NewRecipeActivity : AppCompatActivity() {
                     // Error occurred while creating the File
                     null
                 }
+
                 // Continue only if the File was successfully created
                 photoFile?.also {
                     val photoURI: Uri = FileProvider.getUriForFile(
@@ -75,6 +84,7 @@ class NewRecipeActivity : AppCompatActivity() {
                         it
                     )
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                    takePictureIntent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
                     startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO)
 
                     //photo nicht voll
@@ -103,19 +113,6 @@ class NewRecipeActivity : AppCompatActivity() {
         }
 
     }
-/*
-    private fun checkPhotoFormat(){
-        val photo = BitmapFactory.decodeFile(currentPhotoPath)
-
-        if(photo.width > photo.height){
-            val matrix = Matrix()
-            matrix.postRotate(-90 as Float) // anti-clockwise by 90 degrees
-
-// create a new bitmap from the original using the matrix to transform the result
-            val rotatedBitmap = Bitmap.createBitmap(photo, 0, 0, photo.getWidth(), photo.getHeight(), matrix, true)
-            new_recipe_image.setImageBitmap(rotatedBitmap)
-        }
-    }*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -129,13 +126,33 @@ class NewRecipeActivity : AppCompatActivity() {
             dispatchTakePictureIntent()
         }
 
+        //OnClickListener for rotating photo
+        btn_rotateImage.isEnabled = false //enable button if photo was taken
+        btn_rotateImage.setOnClickListener{
+            val matrix = Matrix()
+            matrix.setRotate(90f)
+
+            imageBitmap = Bitmap.createBitmap(imageBitmap as Bitmap, 0, 0, imageBitmap!!.width, imageBitmap!!.height, matrix, true)
+            new_recipe_image.setImageBitmap(imageBitmap)
+        }
+
+
         //setOnClickListener for adding recipe to list
         button_add_recipe.setOnClickListener{
             if(new_recipe_name.text.toString() == ""){
                 Toast.makeText(this, "Name fehlt", Toast.LENGTH_SHORT).show()
-            }else if(currentPhotoPath == ""){
+            }else if(!File(currentPhotoPath).exists()){
                 Toast.makeText(this, "Foto fehlt", Toast.LENGTH_SHORT).show()
             }else{
+                //override picture file
+                try {
+                    val out = FileOutputStream(currentPhotoPath)
+                    imageBitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, out)
+                }catch (e : IOException){
+                    e.printStackTrace()
+                }
+
+                //check if file already exists
                 renameFile()
                 val intent = Intent()
                 intent.putExtra("recipe", Recipe(new_recipe_name.text.toString(), newPhotoPath))
@@ -146,13 +163,18 @@ class NewRecipeActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        if(currentPhotoPath != "") File(currentPhotoPath).delete()
+        super.onBackPressed()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
-            //checkPhotoFormat()
+            imageBitmap = BitmapFactory.decodeFile(currentPhotoPath)
+            new_recipe_image.setImageBitmap(imageBitmap)
 
-            val bitmap = BitmapFactory.decodeFile(currentPhotoPath)
-            new_recipe_image.setImageBitmap(bitmap)
+            btn_rotateImage.isEnabled = true
         }
     }
 }
