@@ -33,31 +33,40 @@ import kotlinx.android.synthetic.main.new_genre.*
 
 class NewGenreActivity : AppCompatActivity() {
 
+    private var genreDirectory = ""
+
     @Throws(IOException::class)
     private fun createDirectory() : String{
         val storageDir: File = getExternalFilesDir(Environment.DIRECTORY_PICTURES) as File
-        Toast.makeText(this, storageDir.absolutePath, Toast.LENGTH_SHORT).show()
         val genreDir = File(storageDir.absolutePath + "/" + new_genre_name.text.toString())
-        if(genreDir.mkdir()) Toast.makeText(this, "Genre erstellt", Toast.LENGTH_SHORT).show()
 
+        if(genreDir.exists()){
+            Toast.makeText(this, "Kategorie existiert bereits", Toast.LENGTH_SHORT).show()
+            return ""
+        }
+
+        if(genreDir.mkdir()) Toast.makeText(this, "Kategorie erstellt", Toast.LENGTH_SHORT).show()
+
+        genreDirectory = genreDir.absolutePath
         return genreDir.absolutePath
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.new_genre)
+        supportActionBar!!.title = "Neue Kategorie"
 
         btn_add_genre.setOnClickListener{
             if(new_genre_name.text.toString() == ""){
                 Toast.makeText(this, "Name fehlt", Toast.LENGTH_SHORT).show()
             }else{
-                val genrePath = createDirectory()
+                if(createDirectory() != ""){
+                    val intent = Intent()
+                    intent.putExtra("genre", Genre(new_genre_name.text.toString(), genreDirectory))
+                    setResult(Activity.RESULT_OK, intent)
 
-                val intent = Intent()
-                intent.putExtra("genre", Genre(new_genre_name.text.toString(), genrePath))
-                setResult(Activity.RESULT_OK, intent)
-
-                finish()
+                    finish()
+                }
             }
         }
     }

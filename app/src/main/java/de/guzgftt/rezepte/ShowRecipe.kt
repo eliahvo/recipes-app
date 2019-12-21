@@ -16,7 +16,7 @@ class ShowRecipe : AppCompatActivity() {
 
         val recipe = intent.getSerializableExtra("recipe") as Recipe
 
-        recipe_name.text = recipe.name
+        supportActionBar!!.title = recipe.name
 
         val bitmap = BitmapFactory.decodeFile(recipe.picture)
 
