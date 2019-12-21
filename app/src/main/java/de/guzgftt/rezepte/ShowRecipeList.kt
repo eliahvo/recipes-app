@@ -65,6 +65,10 @@ class ShowRecipeList : AppCompatActivity() {
                 val fileDel = File(recipeList[position].picture)
                 fileDel.delete()
 
+                val fileMealPicDel = File(recipeList[position].picture!!.substring(0,
+                    recipeList[position].picture!!.length - (recipeList[position].name!!.length + 4)) + "mealPhotos/" + recipeList[position].name + "_mealPic.jpg")
+                if(fileMealPicDel.exists()) fileMealPicDel.delete()
+
                 recipeList.remove(recipeList[position])
 
                 if(arrayList_recipes.isEmpty() && recipeList.isEmpty()){

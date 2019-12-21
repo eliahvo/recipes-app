@@ -12,6 +12,8 @@ class ShowRecipeFullScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.show_recipe_photo_fullscreen)
 
+        supportActionBar!!.title = intent.getSerializableExtra("recipeName") as String
+
         val filePath = intent.getSerializableExtra("bitmap") as String
 
         val bitmap = BitmapFactory.decodeFile(filePath)

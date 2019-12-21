@@ -30,6 +30,7 @@ import android.media.ExifInterface
 import kotlinx.android.synthetic.main.show_recipe.*
 import android.opengl.ETC1.getHeight
 import android.opengl.ETC1.getWidth
+import kotlinx.android.synthetic.main.new_genre.*
 import java.net.URI
 
 

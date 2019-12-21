@@ -79,8 +79,21 @@ class MainActivity : AppCompatActivity() {
                     dirDel.delete()
                 }else{ //Genre Directory is not empty so it must delete its content before deleting the directory
                     for(file in contents){
-                        file.delete()
-                        allDeleted = !file.exists()
+                        if(file.isDirectory){ //delete directory for meal photos
+                            val content = file.listFiles()
+
+                            if(content.isEmpty()){
+                                file.delete()
+                            }else{
+                                for(file in content){
+                                    file.delete()
+                                }
+                                file.delete()
+                            }
+                        }else{
+                            file.delete()
+                            allDeleted = !file.exists()
+                        }
                     }
                 }
 

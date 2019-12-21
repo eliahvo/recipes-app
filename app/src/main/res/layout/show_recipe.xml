@@ -10,7 +10,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_begin="235dp" />
+            app:layout_constraintGuide_begin="115dp" />
 
     <com.github.chrisbanes.photoview.PhotoView
             android:id="@+id/photo_view"
@@ -38,5 +38,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_begin="252dp" />
+            app:layout_constraintGuide_begin="126dp" />
+
+    <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline"
+            app:srcCompat="@android:color/background_dark"
+            tools:layout_editor_absoluteX="30dp" />
+
+    <TextView
+            android:id="@+id/textView_NoMealPhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/imageView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/imageViewMeal"
+            app:layout_constraintTop_toTopOf="@+id/imageViewMeal" />
 </androidx.constraintlayout.widget.ConstraintLayout>

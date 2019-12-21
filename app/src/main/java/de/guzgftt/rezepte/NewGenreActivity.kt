@@ -61,6 +61,10 @@ class NewGenreActivity : AppCompatActivity() {
                 Toast.makeText(this, "Name fehlt", Toast.LENGTH_SHORT).show()
             }else{
                 if(createDirectory() != ""){
+                    //create directory for meal photos
+                    val genreMealPhotosDir = File(genreDirectory + "/MealPhotos")
+                    genreMealPhotosDir.mkdir()
+
                     val intent = Intent()
                     intent.putExtra("genre", Genre(new_genre_name.text.toString(), genreDirectory))
                     setResult(Activity.RESULT_OK, intent)
