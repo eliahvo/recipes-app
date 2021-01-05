@@ -1,1 +1,1 @@
-* Android app to save recipes by taking a photo
+# Android app to save recipes by taking a photo
