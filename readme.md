@@ -14,6 +14,7 @@
 ![first category view](/doc/firstCategoryView.png)
 
 * To add a new recipe to a category click the plus button in the bottom right corner and the following screen will come up:
+<br></br>
 ![new recipe](/doc/newRecipe.png)
 ![new recipe](/doc/newRecipeWithPhoto.png)
 
@@ -21,6 +22,7 @@
 ![recipe list](/doc/recipeList.png)
 
 * When you click on one Recipe it should look like this:
+<br></br>
 ![view recipe](/doc/viewRecipe.png)
 
 
