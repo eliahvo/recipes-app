@@ -25,19 +25,7 @@
 <br></br>
 ![view recipe](/doc/viewRecipe.png)
 
+## License
+**The MIT License (MIT)**
 
-
-<!---
-<details>
-<summary>1. Add label</summary>
-Click here to add a label to the task. The following modal will come up:
-<br>
-<img  src="doc/addLabelToTask.png"></img>
-</details>
-<details>
-<summary>2. Delete label</summary>
-Click here to delete a label from the task. The following modal will come up:
-<br>
-<img  src="doc/deleteLabelFromTask.png"></img>
-</details>
--->
+Copyright © 2021 Eliah Vogel
